@@ -48,16 +48,45 @@ public class Database {
     }
     
     /**
-     * getInstance                                                             
-     *  Makes this class a singleton.
+     * 
+     * @param isOpenShift 
+     */
+    private Database(Boolean isOpenShift) {
+        // Grab from openshift!
+        String dbHost = System.getenv("OPENSHIFT_MYSQL_DB_HOST");
+        String dbPort = System.getenv("OPENSHIFT_MYSQL_DB_PORT");
+
+        MYSQL_DRIVER = "com.mysql.jdbc.Driver";
+        DB_URL = "jdbc:mysql://" + dbHost + ":" + dbPort + "/java_projects";
+        USER = System.getenv("OPENSHIFT_MYSQL_DB_USERNAME");
+        PASS = System.getenv("OPENSHIFT_MYSQL_DB_PASSWORD");
+    }
+    
+    /**
+     * newInstance
+     *  Grab instance of Database.
+     * @param isOpenShift
+     * @return 
+     */
+    public static Database newInstance(Boolean isOpenShift) {
+        // See if the database is null.                                        
+        if (database == null) {
+            if (isOpenShift) {
+                database = new Database(isOpenShift);
+            } else {
+                database = new Database();                
+            }
+        }
+        
+        return database;
+    }
+    
+    /**
+     * getInstance
+     *  Grab the database!
      * @return 
      */
     public static Database getInstance() {
-        // See if the database is null.                                        
-        if (database == null) {
-            database = new Database();
-        }
-
         return database;
     }
     

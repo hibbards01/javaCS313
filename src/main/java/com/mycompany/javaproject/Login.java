@@ -39,8 +39,16 @@ public class Login extends HttpServlet {
         HttpSession session = request.getSession();
  
         // Check against the database!
-        Database db = Database.getInstance();
+        String openshift = System.getenv("OPENSHIFT_MYSQL_DB_HOST");
+        Boolean isOpenShift = false;
+        
+        if (openshift != null) {
+            isOpenShift = true;
+        }
+        
+        Database db = Database.newInstance(isOpenShift);
         String [] result = db.selectPassword(user);
+       
         
         // Now check it
         if (result == null || !result[1].equals(pass)) {
