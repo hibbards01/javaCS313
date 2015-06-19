@@ -51,7 +51,7 @@ public class Login extends HttpServlet {
        
         
         // Now check it
-        if (result == null || !result[1].equals(pass)) {
+        if (result == null || !pass.equals(result[1])) {
             // Not a user of the system!
             session.setAttribute("loginFailed", true);
             request.getRequestDispatcher("index.jsp").forward(request, response);            
