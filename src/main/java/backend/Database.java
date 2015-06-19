@@ -48,7 +48,7 @@ public class Database {
     }
     
     /**
-     * 
+     * Non-Default Constructor
      * @param isOpenShift 
      */
     private Database(Boolean isOpenShift) {
@@ -59,7 +59,8 @@ public class Database {
         MYSQL_DRIVER = "com.mysql.jdbc.Driver";
         DB_URL = "jdbc:mysql://" + dbHost + ":" + dbPort + "/java_projects";
         USER = System.getenv("OPENSHIFT_MYSQL_DB_USERNAME");
-        PASS = System.getenv("OPENSHIFT_MYSQL_DB_PASSWORD");
+        //PASS = System.getenv("OPENSHIFT_MYSQL_DB_PASSWORD");
+        PASS = "password";
     }
     
     /**
