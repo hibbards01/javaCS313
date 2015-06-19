@@ -107,8 +107,10 @@ public class Database {
         results = executeQuery(query);
         
         // Grab the values!
-        values[0] = results.get(0).get("name");
-        values[1] = results.get(0).get("pass");
+        if (!results.isEmpty()) {            
+            values[0] = results.get(0).get("name");
+            values[1] = results.get(0).get("pass");
+        }
         
         return values;
     }
