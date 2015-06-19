@@ -58,7 +58,6 @@ public class Database {
 
         MYSQL_DRIVER = "com.mysql.jdbc.Driver";
         DB_URL = "jdbc:mysql://127.11.42.130:3306/java_projects";
-        System.out.println("DB_URL = " + DB_URL);
         USER = "java";
         PASS = "password";
     }
@@ -149,7 +148,7 @@ public class Database {
         try {
             // Set up the connection!
             Class.forName(MYSQL_DRIVER);
-            connection = DriverManager.getConnection(DB_URL, USER, PASS);
+            connection = DriverManager.getConnection("jdbc:mysql://127.11.42.130:3306/java_projects", USER, PASS);
             statement = connection.prepareStatement(query);
             
             // Now execute it!
