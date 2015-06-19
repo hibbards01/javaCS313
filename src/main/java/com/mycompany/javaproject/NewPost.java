@@ -7,6 +7,9 @@ package com.mycompany.javaproject;
 
 import backend.Database;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,8 +21,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author samuel
  */
-@WebServlet(name = "Login", urlPatterns = {"/Login"})
-public class Login extends HttpServlet {
+@WebServlet(name = "NewPost", urlPatterns = {"/NewPost"})
+public class NewPost extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,34 +35,24 @@ public class Login extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Grab the input!
-        String user = request.getParameter("username");
-        String pass = request.getParameter("password");
-        
+        // Insert a new post!
         HttpSession session = request.getSession();
- 
-        // Check against the database!
-        String openshift = System.getenv("OPENSHIFT_MYSQL_DB_HOST");
-        Boolean isOpenShift = false;
+        Database db = Database.getInstance();
         
-        if (openshift != null) {
-            isOpenShift = true;
-        }
+        // Grab the data
+        String id = (String) session.getAttribute("user_id");
+        String text = request.getParameter("post");
         
-        Database db = Database.newInstance(isOpenShift);
-        String [] result = db.selectPassword(user);
-       
+        // Grab the date
+        Date date = new Date();
+        DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+        String grabDate = formatDate.format(date);
         
-        // Now check it
-        if (result == null || !pass.equals(result[1])) {
-            // Not a user of the system!
-            session.setAttribute("loginFailed", true);
-            request.getRequestDispatcher("index.jsp").forward(request, response);            
-        } else {
-            session.setAttribute("name", result[0]);
-            session.setAttribute("user_id", result[2]);
-            request.getRequestDispatcher("Posts").forward(request, response);            
-        }
+        // Now insert it!
+        db.insertPost(id, text, grabDate);
+        
+        // Now go back to the Posts servlet
+        request.getRequestDispatcher("Posts").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

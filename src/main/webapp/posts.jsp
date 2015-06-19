@@ -17,12 +17,26 @@
     </head>
     <body>
         <h1>Hello ${name}</h1>
+        <hr>
         <br />
         <h2>Posts</h2>
+        <hr>
         <c:forEach items="${posts}" var="post">
-            <h3>Create by ${post.name}</h3>
-            <h4>${post.date}</h4>
+            <h4>Create by ${post.name} at ${post.date}</h4>
             <p>${post.text}</p>
+            <br />
         </c:forEach>
+        <br />
+        <br />
+        <hr>
+        <br />
+        <h2>Add a new post</h2>
+        <br />
+        <form action="NewPost" method="POST">
+            <label>Post:</label><br />
+            <textarea name="post" rows="10" cols="70" placeholder="Enter text here"></textarea>
+            <br />
+            <button type="submit">Post</button>
+        </form>
     </body>
 </html>

@@ -98,18 +98,19 @@ public class Database {
      */
     public String [] selectPassword(String username) {
         // Create variables
-        String [] values = new String[2];
+        String [] values = new String[3];
         List<Map<String, String>> results = new ArrayList<Map<String, String>>();
-        String query = "SELECT password, name FROM users WHERE username = '" +
+        String query = "SELECT password, name, id FROM users WHERE username = '" +
                 username + "'";
         
         // Now query from the database
-        results = executeQuery(query);
+        results = selectQuery(query);
         
         // Grab the values!
         if (!results.isEmpty()) {            
             values[0] = results.get(0).get("name");
             values[1] = results.get(0).get("pass");
+            values[2] = results.get(0).get("id");
         }
         
         return values;
@@ -127,18 +128,77 @@ public class Database {
                 "JOIN users AS u ON p.user_id = u.id";
         
         // Now execute the query!
-        results = executeQuery(query);
+        results = selectQuery(query);
         
         return results;
     }
     
     /**
+     * insertPost
+     *  This will insert a post into the database!
+     * @param user
+     * @param text
+     * @param date 
+     */
+    public void insertPost(String user, String text, String date) {
+        // Create query
+        String query = "INSERT INTO posts (user_id, post_text, created_at) " +
+                "VALUES ('" + user + "', '" + text + "', '" + date + "')";
+        System.out.println("QUERY = " + query);
+        // Now execute it!
+        executeQuery(query);
+    }
+
+    /**
      * executeQuery
+     *  This will only insert or update the query.
+     * @param query 
+     */
+    private void executeQuery(String query) {
+        // Create some variables
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        // Now grab from the Database
+        try {
+            // Set up the connection!
+            Class.forName(MYSQL_DRIVER);
+                    
+            connection = DriverManager.getConnection(DB_URL, USER, PASS);
+            statement = connection.prepareStatement(query);
+            
+            // Now execute it!
+            statement.execute();                
+        } catch (SQLException m) {
+            m.printStackTrace();
+        } catch (ClassNotFoundException m) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, m);
+        } finally {
+            // Make sure to close everything!                                                     
+            try{
+               if (statement != null) {
+                  statement.close();
+               }
+            } catch(SQLException se) {
+                se.printStackTrace();
+            }
+            try {
+               if (connection != null) {
+                  connection.close();
+               }
+            } catch (SQLException se) {
+               se.printStackTrace();
+            }
+        }
+    }
+    
+    /**
+     * selectQuery
      *  Execute the query and grab the results. here we go
      * @param query
      * @return 
      */
-    private List<Map<String, String>> executeQuery(String query) {
+    private List<Map<String, String>> selectQuery(String query) {
         // Create some variables
         List<Map<String, String>> results = new ArrayList<Map<String, String>>();
         Connection connection = null;
@@ -149,7 +209,6 @@ public class Database {
             // Set up the connection!
             Class.forName(MYSQL_DRIVER);
                     
-            System.out.println("");        
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
             statement = connection.prepareStatement(query);
             
@@ -163,6 +222,7 @@ public class Database {
                     Map<String, String> saveValues = new HashMap<String, String>();
                     saveValues.put("name", values.getString(2));
                     saveValues.put("pass", values.getString(1));
+                    saveValues.put("id", values.getString(3));
                     
                     // Add it the list
                     results.add(0, saveValues);
