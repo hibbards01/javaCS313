@@ -46,7 +46,7 @@ public class Login extends HttpServlet {
             isOpenShift = true;
         }
         
-        Database db = Database.newInstance(isOpenShift);
+        Database db = Database.newInstance(true);
         String [] result = db.selectPassword(user);
        
         
