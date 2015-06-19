@@ -57,9 +57,9 @@ public class Database {
         String dbPort = System.getenv("OPENSHIFT_MYSQL_DB_PORT");
 
         MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-        DB_URL = "jdbc:mysql://127.11.42.130/java_projects";
-        USER = "admintRMqJ9Z";
-        PASS = "Pux9tbxcKcEE";
+        DB_URL = "jdbc:mysql://" + dbHost + ":" + dbPort + "/java_projects";
+        USER = System.getenv("OPENSHIFT_MYSQL_DB_USERNAME");
+        PASS = System.getenv("OPENSHIFT_MYSQL_DB_PASSWORD");
     }
     
     /**
@@ -148,7 +148,9 @@ public class Database {
         try {
             // Set up the connection!
             Class.forName(MYSQL_DRIVER);
-            connection = DriverManager.getConnection("jdbc:mysql://127.11.42.130:3306/java_projects", USER, PASS);
+                    
+            System.out.println("");        
+            connection = DriverManager.getConnection(DB_URL, USER, PASS);
             statement = connection.prepareStatement(query);
             
             // Now execute it!
