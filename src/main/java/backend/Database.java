@@ -57,7 +57,7 @@ public class Database {
         String dbPort = System.getenv("OPENSHIFT_MYSQL_DB_PORT");
 
         MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-        DB_URL = "jdbc:mysql://" + dbHost + ":" + dbPort + "/java_projects";
+        DB_URL = "jdbc:mysql://127.11.42.130:3306/java_projects";
         System.out.println("DB_URL = " + DB_URL);
         USER = "java";
         PASS = "password";
