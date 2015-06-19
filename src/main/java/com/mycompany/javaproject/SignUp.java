@@ -5,21 +5,20 @@
  */
 package com.mycompany.javaproject;
 
-import backend.Database;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author samuel
  */
-@WebServlet(name = "Login", urlPatterns = {"/Login"})
-public class Login extends HttpServlet {
+@WebServlet(name = "SignUp", urlPatterns = {"/SignUp"})
+public class SignUp extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,25 +31,15 @@ public class Login extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Grab the input!
-        String user = request.getParameter("username");
-        String pass = request.getParameter("password");
+        // Grab the variables!
+        String first = request.getParameter("firstName");
+        String last  = request.getParameter("lastName");
+        String user  = request.getParameter("username");
+        String pass  = request.getParameter("password");
         
-        HttpSession session = request.getSession();
- 
-        // Check against the database!
-        Database db = Database.getInstance();
-        String [] result = db.selectPassword(user);
-        
-        // Now check it
-        if (result == null || !result[1].equals(pass)) {
-            // Not a user of the system!
-            session.setAttribute("loginFailed", true);
-            request.getRequestDispatcher("index.jsp").forward(request, response);            
-        } else {
-            session.setAttribute("name", result[0]);
-            session.setAttribute("username", user);
-            request.getRequestDispatcher("Posts").forward(request, response);            
+        // Make sure that they are not empty!
+        if (first == null) {
+            
         }
     }
 

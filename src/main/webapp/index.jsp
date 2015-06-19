@@ -10,7 +10,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Login Page</title>
     </head>
     <body>
         <h1>Login</h1>
@@ -37,5 +37,8 @@
             <input name="password" type="password" />
             <button type="submit">Submit</button>
         </form>
+        <br />
+        <br />
+        <p>Not a member? Sign Up <a href="signUp.jsp">here</a></p>
     </body>
 </html>

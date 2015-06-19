@@ -5,8 +5,12 @@
  */
 package com.mycompany.javaproject;
 
+import backend.Database;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,8 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author samuel
  */
-@WebServlet(name = "HelloServlet", urlPatterns = {"/HelloServlet"})
-public class HelloServlet extends HttpServlet {
+@WebServlet(name = "Posts", urlPatterns = {"/Posts"})
+public class Posts extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,20 +35,14 @@ public class HelloServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet HelloServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet HelloServlet at Openshift!</h1>");
-            out.println("<p>I am so glad this is working!</p>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        // Grab the posts from the database!
+        Database db = Database.getInstance();
+        List<Map<String, String>> results = new ArrayList<Map<String, String>>();
+        results = db.selectPosts();
+
+        // Make sure there was results!
+        request.setAttribute("posts", results);
+        request.getRequestDispatcher("posts.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
