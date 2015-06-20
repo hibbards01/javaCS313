@@ -5,13 +5,14 @@
  */
 package com.mycompany.javaproject;
 
+import backend.Database;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -38,9 +39,21 @@ public class SignUp extends HttpServlet {
         String pass  = request.getParameter("password");
         
         // Make sure that they are not empty!
-        if (first == null) {
-            
+        String openshift = System.getenv("OPENSHIFT_MYSQL_DB_HOST");
+        Boolean isOpenShift = false;
+        
+        if (openshift != null) {
+            isOpenShift = true;
         }
+        Database db = Database.newInstance(isOpenShift);
+        
+        // Now insert the new user!
+        int id = db.insertNewUser(first + " " + last, user, pass);
+        
+        HttpSession session = request.getSession();
+        session.setAttribute("name", first + " " + last);
+        session.setAttribute("user_id", Integer.toString(id));
+        request.getRequestDispatcher("Posts").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

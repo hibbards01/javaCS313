@@ -37,7 +37,15 @@ public class NewPost extends HttpServlet {
             throws ServletException, IOException {
         // Insert a new post!
         HttpSession session = request.getSession();
-        Database db = Database.getInstance();
+        
+        // Check against the database!
+        String openshift = System.getenv("OPENSHIFT_MYSQL_DB_HOST");
+        Boolean isOpenShift = false;
+        
+        if (openshift != null) {
+            isOpenShift = true;
+        }
+        Database db = Database.newInstance(isOpenShift);
         
         // Grab the data
         String id = (String) session.getAttribute("user_id");
@@ -49,6 +57,8 @@ public class NewPost extends HttpServlet {
         String grabDate = formatDate.format(date);
         
         // Now insert it!
+        System.out.println("id = " + id);
+        System.out.println("db = " + db);
         db.insertPost(id, text, grabDate);
         
         // Now go back to the Posts servlet

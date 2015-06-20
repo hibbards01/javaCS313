@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -144,9 +145,25 @@ public class Database {
         // Create query
         String query = "INSERT INTO posts (user_id, post_text, created_at) " +
                 "VALUES ('" + user + "', '" + text + "', '" + date + "')";
-        System.out.println("QUERY = " + query);
+        System.out.println("POST = " + query);
         // Now execute it!
         executeQuery(query);
+    }
+    
+    /**
+     * insertNewUser
+     *  Insert a new user!
+     * @param name
+     * @param user
+     * @param pass 
+     * @return
+     */
+    public Integer insertNewUser(String name, String user, String pass) {
+        // Create query
+        String query = "INSERT INTO users (username, password, name) VALUES " +
+                "('" + user + "', '" + pass + "', '" + name + "')"; 
+        // Now execute it!
+        return executeQuery(query);
     }
 
     /**
@@ -154,8 +171,9 @@ public class Database {
      *  This will only insert or update the query.
      * @param query 
      */
-    private void executeQuery(String query) {
+    private Integer executeQuery(String query) {
         // Create some variables
+        int id = 0;
         Connection connection = null;
         PreparedStatement statement = null;
         
@@ -165,10 +183,16 @@ public class Database {
             Class.forName(MYSQL_DRIVER);
                     
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
-            statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             
             // Now execute it!
-            statement.execute();                
+            statement.execute();
+            
+            // Grab the id!
+            ResultSet ids = statement.getGeneratedKeys();            
+            while (ids.next()) {
+                id = ids.getInt(1);
+            }
         } catch (SQLException m) {
             m.printStackTrace();
         } catch (ClassNotFoundException m) {
@@ -190,6 +214,8 @@ public class Database {
                se.printStackTrace();
             }
         }
+        
+        return id;
     }
     
     /**
